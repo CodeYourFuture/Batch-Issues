@@ -1,21 +1,45 @@
-# COURSEWORK NAME
+# GitHub Issue Migrator
 
-Replace this readme with the requirements for your coursework
+This package automates bulk exporting and importing issues with the GitHub CLI (`gh`).
 
-## Learning Objectives
-- [ ] Use the [Teach Tech Together](https://teachtogether.tech/en/index.html#s:process-objectives) guide to construct your objectives
-- [ ] Limit the objectives to 3-5 items
-- [ ] Write objectives you can measure
+## Features
 
-## Requirements
+- Export issues from one GitHub repository to a JSON file.
+- Import issues from a JSON file to another GitHub repository.
+- Dynamically specify source and destination repositories.
 
-Explain the requirements of the coursework. You might want to talk about goals here. 
-You might want to use formal specifications like Given/When/Then. It's ok for requirements to be in different formats.
-We want trainees to learn to interpret requirements in many settings and expressions.
+## Prerequisites
 
-## Acceptance Criteria
+- `gh` [(GitHub CLI)](https://cli.github.com/) must be installed and authenticated on your system:
 
-- [ ] I have provided clear success criteria
-- [ ] These might be related to the objectives and the requirements
-- [ ] I have given some simple, clear ways for trainees to evaluate their work
-- [ ] I have run Lighthouse and my Accessibility score is 100
+```zsh
+brew install gh
+```
+
+## Install
+
+To install this package via npm:
+
+```bash
+npm install batch-issue-cloner
+```
+
+### Use
+
+```bash
+gim --source <source-repo> --destination <destination-repo>
+```
+
+Replace `<source-owner/source-repo>` and `<destination-owner/destination-repo>` with the appropriate GitHub owner and repository names.
+
+### As an executable without installing
+
+```zsh
+npx batch-issue-cloner --source <source-repo> --destination <destination-repo>
+```
+
+## Notes
+
+- Ensure that `gh` is logged into the GitHub account with access to both the source and destination repositories.
+- The script requires Node.js to be installed on your machine.
+- An `issues.json` file is automatically created and used within the script. Ensure the directory has write permissions.
