@@ -27,7 +27,7 @@ npm install batch-issue-cloner
 ### Use
 
 ```bash
-gim --source <source-repo> --destination <destination-repo>
+bic --source <source-repo> --destination <destination-repo>
 ```
 
 Replace `<source-owner/source-repo>` and `<destination-owner/destination-repo>` with the appropriate GitHub owner and repository names.

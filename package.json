@@ -5,6 +5,9 @@
   "license": "CC-BY-SA-4.0",
   "description": "Batch copy issues from one GitHub repository to another",
   "type": "module",
+  "bin": {
+    "bic": "./index.js"
+  },
   "scripts": {
     "bic": "node index.js"
   },
