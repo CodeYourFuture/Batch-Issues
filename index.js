@@ -45,8 +45,8 @@ function importIssues(destinationRepo) {
   }
   const issues = JSON.parse(fs.readFileSync(issuesFilePath, "utf8"));
   issues.forEach((issue) => {
-    const title = issue.title.replace(/"/g, '\\"');
-    const body = issue.body.replace(/"/g, '\\"').replace(/\n/g, "\\n");
+    const title = issue.title;
+    const body = issue.body;
     const labels = issue.labels.map((label) => label.name).join(",");
 
     try {
