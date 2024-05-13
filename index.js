@@ -2,6 +2,9 @@
 
 import fs from "fs";
 import { execSync } from "child_process";
+import path from "path";
+
+const issuesFilePath = path.join(__dirname, "issues.json"); // Ensures the path is correct regardless of where the script is run from
 
 const cloneLabels = (sourceRepo, destinationRepo) => {
   try {
@@ -41,7 +44,14 @@ const main = () => {
   const destinationRepo = args[args.indexOf("--destination") + 1];
 
   cloneLabels(sourceRepo, destinationRepo);
-  const issues = JSON.parse(fs.readFileSync("./issues.json", "utf8"));
+
+  // Check if the file exists, and create it if it does not
+  if (!fs.existsSync(issuesFilePath)) {
+    console.log("No issues file found. Creating an empty issues file...");
+    fs.writeFileSync(issuesFilePath, JSON.stringify([]));
+  }
+
+  const issues = JSON.parse(fs.readFileSync(issuesFilePath, "utf8"));
   importIssues(destinationRepo, issues);
 };
 
