@@ -3,24 +3,47 @@
 import fs from "fs";
 import { execSync } from "child_process";
 import path from "path";
+import { fileURLToPath } from "url";
 
-const issuesFilePath = path.join(__dirname, "issues.json"); // Ensures the path is correct regardless of where the script is run from
+// Recreating __dirname in ES6 module
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const cloneLabels = (sourceRepo, destinationRepo) => {
+const issuesFilePath = path.join(__dirname, "issues.json");
+
+function fetchAndSaveIssues(sourceRepo) {
   try {
-    console.log(
-      `Cloning missing labels from ${sourceRepo} to ${destinationRepo}...`
+    console.log(`Fetching issues from ${sourceRepo}...`);
+    const issues = execSync(
+      `gh issue list --repo ${sourceRepo} --limit 1000 --state all --json title,body,labels`,
+      {
+        encoding: "utf8",
+      }
     );
-    execSync(`gh label clone ${sourceRepo} --repo ${destinationRepo}`, {
-      stdio: "inherit",
-    });
-    console.log("Missing labels successfully cloned.");
+    fs.writeFileSync(issuesFilePath, issues);
+    console.log("Issues successfully fetched and saved.");
   } catch (error) {
-    console.error("Failed to clone labels:", error);
+    console.error("Failed to fetch and save issues:", error);
   }
-};
+}
 
-const importIssues = (destinationRepo, issues) => {
+function cloneLabels(sourceRepo, destinationRepo) {
+  console.log(
+    `Cloning missing labels from ${sourceRepo} to ${destinationRepo}...`
+  );
+  execSync(`gh label clone ${sourceRepo} --repo ${destinationRepo}`, {
+    stdio: "inherit",
+  });
+  console.log("Missing labels successfully cloned.");
+}
+
+function importIssues(destinationRepo) {
+  if (!fs.existsSync(issuesFilePath)) {
+    console.error(
+      "No issues file found. Please ensure the issues file exists and try again."
+    );
+    return;
+  }
+  const issues = JSON.parse(fs.readFileSync(issuesFilePath, "utf8"));
   issues.forEach((issue) => {
     const title = issue.title.replace(/"/g, '\\"');
     const body = issue.body.replace(/"/g, '\\"').replace(/\n/g, "\\n");
@@ -29,30 +52,25 @@ const importIssues = (destinationRepo, issues) => {
     try {
       execSync(
         `gh issue create --repo ${destinationRepo} --title "${title}" --body "${body}" --label "${labels}"`,
-        { stdio: "inherit" }
+        {
+          stdio: "inherit",
+        }
       );
       console.log(`Issue created: ${title}`);
     } catch (error) {
       console.error("Failed to create issue:", error);
     }
   });
-};
+}
 
-const main = () => {
+function main() {
   const args = process.argv.slice(2);
   const sourceRepo = args[args.indexOf("--source") + 1];
   const destinationRepo = args[args.indexOf("--destination") + 1];
 
+  fetchAndSaveIssues(sourceRepo);
   cloneLabels(sourceRepo, destinationRepo);
-
-  // Check if the file exists, and create it if it does not
-  if (!fs.existsSync(issuesFilePath)) {
-    console.log("No issues file found. Creating an empty issues file...");
-    fs.writeFileSync(issuesFilePath, JSON.stringify([]));
-  }
-
-  const issues = JSON.parse(fs.readFileSync(issuesFilePath, "utf8"));
-  importIssues(destinationRepo, issues);
-};
+  importIssues(destinationRepo);
+}
 
 main();
