@@ -1,13 +1,20 @@
-export const parseArguments = (args) => {
-  const sourceIndex = args.indexOf("--source");
-  const destinationIndex = args.indexOf("--destination");
+import { parseArgs } from "node:util";
 
-  if (sourceIndex === -1 || destinationIndex === -1) {
+export const parseArguments = (args) => {
+  const { values } = parseArgs({
+    args,
+    options: {
+      "destination": { short: "d", type: "string" },
+      "source": { short: "s", type: "string" },
+    },
+  });
+
+  if (!values.destination || !values.source) {
     throw new Error("Please provide both --source and --destination arguments");
   }
 
   return {
-    sourceRepo: args[sourceIndex + 1],
-    destinationRepo: args[destinationIndex + 1],
+    sourceRepo: values.source,
+    destinationRepo: values.destination,
   };
 };

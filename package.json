@@ -9,7 +9,11 @@
     "bic": "./index.js"
   },
   "scripts": {
-    "bic": "node index.js"
+    "bic": "node index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18.3"
   },
   "repository": {
     "type": "git",
