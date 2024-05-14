@@ -9,6 +9,8 @@ This package automates bulk exporting and importing issues with the GitHub CLI (
 - Export issues from one GitHub repository to a JSON file.
 - Import issues from a JSON file to another GitHub repository.
 - Specify source and destination repositories on the command line.
+- Clone labels that don't exist on the destination repository.
+- Only copy issues that don't already exist on the destination repository (based on title).
 
 ## Prerequisites
 
@@ -33,4 +35,4 @@ npx batch-issue-cloner --source <source-repo> --destination <destination-repo>
 ## Notes
 
 - Check that `gh` is logged into the GitHub account with access to both the source and destination repositories.
-- An `issues.json` file is automatically created and used within the script. Ensure the directory has write permissions.
+- Source and destination json files are automatically created and used within the script. Ensure the directory has write permissions.
